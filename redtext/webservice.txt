@@ -1,0 +1,14 @@
+1.webservice NoSuchMethodException getPortClassMap()
+				webservice: Could not initialize Service NoSuchMethodException getPortClassMap()  
+				
+				webservicejaxws .
+				
+				webservice中碰到的问题： Could not initialize Service NoSuchMethodException getPortClassMap() 
+				
+				情况如下：A应用是用jaxws编写的web service客户端，单独运行该客户端成功。 
+				B应用是基于xfire的web service服务，在B中调用A，结果在构造一个Service类的似乎出了上面的错，该类是javax.xml.ws.Service的子类。 
+				在javax.xml.ws.Service中并没有方法getPortClassMap()，那么为什么会报NoSuchMethodException getPortClassMap()这个错呢？ 
+				查看javax.xml.ws.Service的源代码，该类的构造函数调用了javax.xml.ws.spi.Provider来创建Service类的代理，程序就是在这一步出错的。 
+				经过搜索，网上建议删除xfire包后该错误会消失，所以判断是类加载的问题。 
+				xfire的包在tomcat/webapps/app/web-inf的lib下，其加载顺序高于由根classloader加载的jdk中的javax.xml.ws.spi.Provider，所以在创建Service的代理的时候没有使用jdk自带的javax.xml.ws.spi.Provider，而是使用了xfire包中的javax.xml.ws.spi.Provider。 
+				基于以上判断，我删除了xfire包中的jaxws子包，搞定！ 

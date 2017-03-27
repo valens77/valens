@@ -1,0 +1,14 @@
+com.valens.base.mail
+com.valens.base.myeclipse
+com.valens.base.utils
+com.valens.datasource
+com.valens.job
+com.valens.spring
+com.valens.struts.form
+com.valens.upload.ftp
+com.valens.upload.poi
+com.valens.upload.struts
+com.valens.upload.ziprar
+com.valens.utils
+com.valens.webservice
+test
