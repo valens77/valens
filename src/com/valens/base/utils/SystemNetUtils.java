@@ -80,7 +80,7 @@ public class SystemNetUtils {
 	 */
 	private static InetAddress getWinLocalIp() throws UnknownHostException {
 		InetAddress inet = InetAddress.getLocalHost();
-		System.out.println("本机的ip=" + inet.getHostAddress());
+		//System.out.println("本机的ip=" + inet.getHostAddress());
 		return inet;
 	}
 

@@ -131,12 +131,12 @@ public class MyRcUtils {
 		if (map != null&&c!=null) {
 			Set<Object> set = map.keySet();
 			object = c.newInstance();
-			Field[] filds = c.getDeclaredFields();
+			Field[] filds = ReflectUtils.getClassFiled(c, true);
 			for (Object key : set) {
 				for (Field filed : filds) {
 					Class property = filed.getType();
 					//Class properyClass=filed.getDeclaringClass();
-					Class properyClass=getPrinltn(filed);
+					Class properyClass=ReflectUtils.getFieldFanXin(filed);
 					if (filed.getName().equalsIgnoreCase(key.toString())) {//Object 类型无法用
 					//if (key.toString().equalsIgnoreCase(filed.getName())) {//不区分大小写
 						filed.setAccessible(true);
@@ -167,10 +167,20 @@ public class MyRcUtils {
 							//System.out.println(property);
 							if(property.getName().equals("java.util.Map")){
 								filed.set(object, value);
-							}else{
-								Object newObject = mapToObject((Map) value,
-										property);
-								filed.set(object, newObject);
+							}else{ 
+								Object newObject=null;
+								if(property.getName().equals("java.util.List")){
+									List tList= new ArrayList();
+									newObject=	mapToObject((Map) value,
+											properyClass);
+									 tList.add(newObject);
+									filed.set(object,tList);
+									//filed.set(object, newObject);
+								}else{
+									 newObject=	mapToObject((Map) value,
+											property);
+									 filed.set(object, newObject);
+								}
 							}
 									 
 						} else if (value.getClass().getName().equals(
@@ -181,7 +191,7 @@ public class MyRcUtils {
 							Object newObject=null;
 							if(property.getName().equals("java.util.Set")){
 								newObject= listMapToObject((List<Map<Object,Object>>) value,
-										getPrinltn(filed),ConsEnum.Set);
+										ReflectUtils.getFieldFanXin(filed),ConsEnum.Set);
 							}else {
 								newObject= listMapToObject((List<Map<Object,Object>>) value,
 										properyClass,null);
@@ -211,8 +221,7 @@ public class MyRcUtils {
 	 * @param value
 	 * @param object
 	 */
-	private static void setFiledValue(Field filed, Object value, Object object) {
-
+	private static void setFiledValue(Field filed, Object value, Object object) { 
 		filed.setAccessible(true);
 		String type = filed.getType().getName();
 		boolean isNull = value == null || value.equals("");
@@ -245,12 +254,11 @@ public class MyRcUtils {
 					filed.set(object, new SimpleDateFormat("yyyyMMddHHmmss").parse(date.substring(0,16)));
 				}
 			} else {
-				filed.set(object, mapToObject((Map)value,getPrinltn(filed)));
+				filed.set(object, mapToObject((Map)value,ReflectUtils.getFieldFanXin(filed)));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-		}
-
+		} 
 	}
 	/**
 	 * OBJECT TO MAP  
@@ -332,28 +340,7 @@ public class MyRcUtils {
 		return null;
 	}
 	
-	/**
-	 * 获取泛型类型
-	 * @param field
-	 * @return Class
-	 */
-	public static Class getPrinltn(Field field){
-		Type type = field.getGenericType(); 
-		if (type instanceof ParameterizedType) {     
-		    ParameterizedType paramType = (ParameterizedType) type;     
-		    Type[] actualTypes = paramType.getActualTypeArguments();     
-		    for (Type aType : actualTypes) {         
-		        if (aType instanceof Class) {         
-		            Class clz = (Class) aType;             
-		            //System.out.println(clz.getName()); //输出java.lang.String    
-		            return clz;
-		        }     
-		    } 
-		}
-		//System.out.println("OVER");
-		return Object.class;
-		
-	}
+
 
 	public static void main(String[] s) throws  
 			 Exception {

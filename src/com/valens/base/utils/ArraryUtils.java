@@ -1,5 +1,7 @@
 package com.valens.base.utils;
 
+import java.util.Arrays;
+
 
 public class ArraryUtils {
 
@@ -8,6 +10,8 @@ public class ArraryUtils {
 	 */
 	public static void main(String[] args) {
 		String[] str={"订单号","面额","状态"};
+		String[] str1={"订单号1","面额1","状态1"};
+		String[] str2={"订单号2","面额2","状态2"};
 		Object[] obs=ArraryUtils.arrayAdd(str,1);
 		/*str=(String[])HzsRechangeBillJob.arrayAdd(str,1);*/
 		for(Object data:obs){
@@ -15,7 +19,35 @@ public class ArraryUtils {
 		}
 		byte b[]={01,02};
 		System.out.println(b);
+		Object object=ArraryUtils.concatAll(str, str1,str2);
+		System.out.println(object);
 	}
+	/**
+	 * @Description 数组合并
+	 * @param first
+	 * @param rest
+	 * @return  T[]
+	 * @author Huangxiaohua
+	 * @CreateDate 2017-5-27
+	 */
+	public static <T> T[] concatAll(T[] first, T[]... rest) {  
+		  int totalLength = first.length;  
+		  T[] result=null;
+		  if(rest!=null&&rest.length>0){ 
+			  for (T[] array : rest) {  
+				  totalLength += array.length;  
+			  }  
+			    result = Arrays.copyOf(first, totalLength);  
+			  int offset = first.length;  
+			  for (T[] array : rest) {  
+				  System.arraycopy(array, 0, result, offset, array.length);  
+				  offset += array.length;  
+			  }  
+		  }else{
+			  result = Arrays.copyOf(first, totalLength);  
+		  }
+		  return result;  
+		}
 	/**
 	 * 复制一个数组 在源数组上多一个index数据
 	 * EG:OBJECT A[]=[1,2,3,4] arrayAdd(A,2)=[1,2,3,3,4]

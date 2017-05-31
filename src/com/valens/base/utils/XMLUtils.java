@@ -15,10 +15,33 @@ import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 
+
 public class XMLUtils {
 	private static Logger logger = Logger.getLogger(DateUtils.class.getName());
 
-	public static Map xmlTransObject(String xmlString) throws DocumentException {
+	/**
+	 * @Description XML转换成对象
+	 * @param xmlString
+	 * @param c
+	 * @return
+	 * @throws Exception  Object
+	 * @author Huangxiaohua
+	 * @CreateDate 2017-5-27
+	 */
+	public static Object xmlTransObject(String xmlString, Class c)
+			throws Exception {
+		Map map = xmlTransMap(xmlString);
+		return MyRcUtils.mapToObject(map, c);
+	}
+	/**
+	 * @Description XML转换成MAP
+	 * @param xmlString
+	 * @return
+	 * @throws DocumentException  Map
+	 * @author Huangxiaohua
+	 * @CreateDate 2017-5-27
+	 */
+	public static Map xmlTransMap(String xmlString) throws DocumentException {
 
 		Document doc = DocumentHelper.parseText(xmlString);
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -153,7 +176,8 @@ public class XMLUtils {
 					return sb.toString();
 				}
 
-				Field[] filds = o.getClass().getDeclaredFields();
+				//Field[] filds = o.getClass().getDeclaredFields();
+				Field[] filds = ReflectUtils.getClassFiled(o.getClass(), true);
 				for (Field filed : filds) {
 					;
 					boolean flag = filed.isAccessible();
@@ -237,7 +261,7 @@ public class XMLUtils {
 
 			String xml = XMLUtils.transObjectToXml(o, true);
 			System.out.println(xml);
-			Map map = XMLUtils.xmlTransObject(xml);
+			Map map = XMLUtils.xmlTransMap(xml);
 			System.out.println(map);
 			Object obj = MyRcUtils.mapToObject(map, RootXml.class);
 			System.out.println(obj);
