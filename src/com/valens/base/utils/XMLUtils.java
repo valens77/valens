@@ -177,19 +177,46 @@ public class XMLUtils {
 				}
 
 				//Field[] filds = o.getClass().getDeclaredFields();
-				Field[] filds = ReflectUtils.getClassFiled(o.getClass(), true);
+				Field[] filds = ReflectUtils.getClassFiled(o.getClass(), true); 
 				for (Field filed : filds) {
 					;
 					boolean flag = filed.isAccessible();
 					filed.setAccessible(true);
 					Class type = filed.getType();
-					sb.append(("<" + filed.getName() + ">").toUpperCase());
+					
 					if (isBaseType(type)) {//
-						sb.append(filed.get(o));
+						sb.append(("<" + filed.getName() + ">"));
+						if (filed.get(o) == null) {
+							sb.append("");
+						} else
+							sb.append(filed.get(o));
+						sb.append(("</" + filed.getName() + ">"));
 					} else {
-						sb.append(transObjectToXml(filed.get(o), false));
+						
+						if((type != null && type.isArray())){//字段为数组
+							
+							Object[] osObjects=(Object[])filed.get(o);
+							Class c1=osObjects.getClass().getComponentType();
+							//Object[] os=new Object[o];
+							for(Object to: osObjects){ //
+								sb.append(("<" + filed.getName() + ">"));
+								Object xl="";
+								if (!isBaseType(c1)) {
+									xl=transObjectToXml(to,
+											false);
+								}else{
+									xl=to;
+								}
+								sb.append(xl);
+								sb.append(("</" + filed.getName() + ">"));
+							}
+						}else{
+							sb.append(("<" + filed.getName() + ">"));
+							sb.append(transObjectToXml(filed.get(o), false));
+							sb.append(("</" + filed.getName() + ">"));
+						}
 					}
-					sb.append(("</" + filed.getName() + ">").toUpperCase());
+					
 					filed.setAccessible(flag);
 				}
 				if (isFirst) {
