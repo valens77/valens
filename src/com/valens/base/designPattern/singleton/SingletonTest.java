@@ -1,6 +1,15 @@
-package com.valens.base.singleton;
+package com.valens.base.designPattern.singleton;
 
-
+/**
+ * 单例
+ * @Description TODO
+ * @author Huangxiaohua
+ * @CreateDate 2017-6-26
+ * @updater     
+ * @updateDate 
+ * @remark
+ * @version v1.0
+ */
 public class SingletonTest {
 	public static void main(String[] args) {
 		for(int i=0;i<100;i++){

@@ -66,6 +66,7 @@ public class Test {
 				tempStr=bufferedReader.readLine();
 			}
 			System.out.println(baseStr);
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
